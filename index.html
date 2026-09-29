@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HidroLab - Masa Depan Edukasi Energi Terbarukan & PLTMH</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hydroDark: '#060d1d',
+                        hydroNav: 'rgba(11, 22, 44, 0.85)',
+                        hydroCard: 'rgba(15, 23, 42, 0.75)',
+                        cyanGlow: '#00f2fe',
+                        tealGlow: '#4facfe',
+                        emeraldGlow: '#10b981'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #060d1d;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.18);
+        }
+
+        .glass-panel-hover:hover {
+            border-color: rgba(0, 242, 254, 0.5);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #10b981 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060d1d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-white">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="glass-panel rounded-2xl px-6 py-3 flex items-center justify-between shadow-2xl">
+                <!-- Brand Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid font-bold fa-water"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight text-white">
+                        Hidro<span class="text-cyan-400">Lab</span>
+                    </span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                    <a href="#beranda" class="text-cyan-400 transition-colors">Beranda</a>
+                    <a href="#keunggulan" class="text-slate-300 hover:text-cyan-400 transition-colors">Keunggulan</a>
+                    <a href="#materi-ebt" class="text-slate-300 hover:text-cyan-400 transition-colors">Modul EBT</a>
+                    <a href="#simulator" class="text-slate-300 hover:text-cyan-400 transition-colors">Simulator PLTMH</a>
+                    <a href="#kuis" class="text-slate-300 hover:text-cyan-400 transition-colors">Kuis Interaktif</a>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="hidden md:block">
+                    <a href="#simulator" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                        Coba Simulator <i class="fa-solid fa-play ml-1.5 text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white text-xl p-2">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation Menu Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden mt-3 glass-panel rounded-2xl p-5 flex flex-col gap-4 text-center">
+                <a href="#beranda" class="text-cyan-400 font-semibold py-1">Beranda</a>
+                <a href="#keunggulan" class="text-slate-300 py-1">Keunggulan</a>
+                <a href="#materi-ebt" class="text-slate-300 py-1">Modul EBT</a>
+                <a href="#simulator" class="text-slate-300 py-1">Simulator PLTMH</a>
+                <a href="#kuis" class="text-slate-300 py-1">Kuis Interaktif</a>
+                <a href="#simulator" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-sm">Coba Simulator</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="relative min-h-screen pt-32 pb-20 flex items-center justify-center overflow-hidden">
+        <!-- Interactive Background Particles Canvas -->
+        <canvas id="heroCanvas" class="absolute inset-0 z-0 opacity-40"></canvas>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+            <!-- Badge Indicator -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel text-xs font-semibold text-cyan-300 mb-6 border border-cyan-500/30 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                Laboratorium Virtual & Edukasi Energi Terbarukan
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight sm:leading-none">
+                Ubah Aliran Air Menjadi <br>
+                <span class="text-gradient">Energi Bersih Masa Depan</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 font-normal leading-relaxed">
+                Jelajahi keajaiban Pembangkit Listrik Tenaga Mikrohidro (PLTMH). Pelajari alur konversi energi secara real-time, uji simulasi parameter air, dan tingkatkan literasi energimu bersama HidroLab.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+                <a href="#simulator" onclick="playSound('click')" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 text-slate-950 font-extrabold text-base shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-microchip text-lg"></i> Jelajahi Simulator PLTMH
+                </a>
+                <a href="#kuis" onclick="playSound('click')" class="w-full sm:w-auto px-8 py-4 rounded-xl glass-panel text-white hover:bg-slate-800/80 font-bold text-base transition-all flex items-center justify-center gap-3 border border-slate-700 hover:border-cyan-400">
+                    <i class="fa-solid fa-graduation-cap text-cyan-400"></i> Uji Pemahaman Anda
+                </a>
+            </div>
+
+            <!-- Animated Stat Tickers -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass-panel p-5 rounded-2xl text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-cyan-400 mb-1" id="stat-efficiency">0%</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-medium">Efisiensi Maksimal</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-300 mb-1" id="stat-power">0 kW</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-medium">Potensi Daya Listrik</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-emerald-400 mb-1" id="stat-co2">0 Ton</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-medium">Reduksi Emisi/Thn</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-amber-400 mb-1">100%</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider font-medium">Edukasi Ramah Lingkungan</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tentang HidroLab & Keunggulan -->
+    <section id="keunggulan" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Solusi Edukasi Digital</h2>
+                <h3 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">Mengapa HidroLab Penting Bagi Kita?</h3>
+                <p class="text-slate-300 text-base sm:text-lg">
+                    HidroLab menghadirkan jembatan interaktif antara potensi alam lokal dan pemahaman teknologi modern, mempermudah Anda mempelajari pemanfaatan energi bersih secara langsung.
+                </p>
+            </div>
+
+            <!-- Grid Kartu Keunggulan Interaktif -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer" onclick="openAdvantageModal('ebt')">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors">Edukasi Energi Terbarukan</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Mengenalkan prinsip mendasar EBT kepada masyarakat umum dan pelajar dengan bahasa visual yang mudah dipahami.
+                        </p>
+                    </div>
+                    <span class="text-xs font-semibold text-cyan-400 flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                        Pelajari Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer" onclick="openAdvantageModal('proses')">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-300 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-teal-300 transition-colors">Visualisasi Proses Langsung</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Menampilkan simulasi transparan bagaimana energi mekanis putaran turbin diubah menjadi arus listrik instan.
+                        </p>
+                    </div>
+                    <span class="text-xs font-semibold text-teal-300 flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                        Pelajari Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer" onclick="openAdvantageModal('literasi')">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">Literasi Digital & Data</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Menyajikan dashboard pemonitoran parameter listrik (Volt, Watt, RPM) secara real-time yang presisi.
+                        </p>
+                    </div>
+                    <span class="text-xs font-semibold text-emerald-400 flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                        Pelajari Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer" onclick="openAdvantageModal('wisata')">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-amber-300 transition-colors">Dukungan Wisata Edukatif</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Mendukung destinasi wisata berbasis sains dan teknologi ramah lingkungan yang menarik minat wisatawan.
+                        </p>
+                    </div>
+                    <span class="text-xs font-semibold text-amber-400 flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                        Pelajari Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="glass-panel p-8 rounded-3xl glass-panel-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer" onclick="openAdvantageModal('lokal')">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-droplet"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors">Potensi Air Berkelanjutan</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Memaksimalkan aliran sungai tanpa merusak ekosistem akuatik lokal secara mandiri dan konsisten.
+                        </p>
+                    </div>
+                    <span class="text-xs font-semibold text-blue-400 flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                        Pelajari Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+
+                <!-- Card 6: QR Code Interactive Highlight -->
+                <div class="glass-panel p-8 rounded-3xl bg-gradient-to-br from-cyan-900/30 to-emerald-900/30 border border-cyan-500/40 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold">Fitur QR Code</span>
+                            <i class="fa-solid fa-qrcode text-2xl text-cyan-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">Akses Modul Mudah</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Cukup pindaikan Kode QR di lokasi fisik HidroLab untuk langsung membuka panduan pembelajaran interaktif di smartphone Anda.
+                        </p>
+                    </div>
+                    <button onclick="openQRModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors">
+                        Simulasikan Pindai Kode QR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Detail Keunggulan -->
+    <div id="advantageModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-3xl max-w-lg w-full relative border border-cyan-500/40 shadow-2xl">
+            <button onclick="closeAdvantageModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modalContent">
+                <!-- Dynamic Content via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modul Edukasi EBT & Kalkulator Karbon -->
+    <section id="materi-ebt" class="py-20 bg-slate-950/50 relative border-y border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-3">Pengetahuan Dasar</h2>
+                <h3 class="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">Mengenal Energi Baru Terbarukan (EBT)</h3>
+                <p class="text-slate-300 text-sm sm:text-base">
+                    Energi terbarukan dimanfaatkan dari sumber daya alam yang terus pulih secara alami tanpa emisi berbahaya.
+                </p>
+            </div>
+
+            <!-- Tab Navigation for EBT Types -->
+            <div class="flex flex-wrap justify-center gap-3 mb-10">
+                <button onclick="switchEbtTab('hidro')" id="tab-btn-hidro" class="ebt-tab-btn active px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-water mr-2"></i> Tenaga Air (Hidro)
+                </button>
+                <button onclick="switchEbtTab('surya')" id="tab-btn-surya" class="ebt-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-slate-800 text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-sun mr-2"></i> Tenaga Surya (Solar)
+                </button>
+                <button onclick="switchEbtTab('angin')" id="tab-btn-angin" class="ebt-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-slate-800 text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-wind mr-2"></i> Tenaga Angin
+                </button>
+                <button onclick="switchEbtTab('biomassa')" id="tab-btn-biomassa" class="ebt-tab-btn px-5 py-2.5 rounded-xl text-sm font-bold transition-all bg-slate-800 text-slate-300 hover:text-white">
+                    <i class="fa-solid fa-recycle mr-2"></i> Biomassa
+                </button>
+            </div>
+
+            <!-- Tab Content Display -->
+            <div class="glass-panel p-8 sm:p-10 rounded-3xl max-w-4xl mx-auto mb-16">
+                <div id="ebt-tab-content">
+                    <!-- Dynamic Tab Content loaded via JS -->
+                </div>
+            </div>
+
+            <!-- Interaktif: Kalkulator Dampak Lingkungan SEDERHANA -->
+            <div class="glass-panel p-8 sm:p-10 rounded-3xl max-w-4xl mx-auto bg-gradient-to-r from-emerald-950/40 via-slate-900 to-cyan-950/40 border border-emerald-500/30">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="flex-1">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-3">
+                            <i class="fa-solid fa-calculator"></i> Kalkulator Dampak Lingkungan
+                        </div>
+                        <h4 class="text-2xl font-black text-white mb-2">Berapa Banyak Karbon yang Anda Hemat?</h4>
+                        <p class="text-slate-300 text-sm mb-6">
+                            Geser slider konsumsi listrik bulanan Anda di bawah ini untuk melihat perkiraan reduksi emisi CO2 jika beralih ke Energi Air HidroLab.
+                        </p>
+
+                        <!-- Slider Konsumsi Listrik -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm font-semibold mb-2">
+                                <span class="text-slate-300">Penggunaan Listrik Rumah Tangga:</span>
+                                <span class="text-cyan-400 font-bold" id="kwh-value">150 kWh/bulan</span>
+                            </div>
+                            <input type="range" id="kwh-slider" min="50" max="1000" step="10" value="150" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+                    </div>
+
+                    <!-- Output Results -->
+                    <div class="w-full md:w-72 glass-panel p-6 rounded-2xl text-center border border-emerald-500/40 bg-slate-900/90">
+                        <div class="text-xs text-slate-400 font-medium mb-1">Pencegahan Emisi CO₂</div>
+                        <div class="text-3xl font-extrabold text-emerald-400 mb-3" id="co2-result">1,530 kg</div>
+                        <div class="text-xs text-slate-400 font-medium mb-1">Setara Menanam Pohon</div>
+                        <div class="text-2xl font-extrabold text-cyan-300" id="trees-result">70 Pohon/Tahun</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMULATOR PLTMH & ALUR KERJA VISUAL -->
+    <section id="simulator" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Laboratorium Virtual</h2>
+                <h3 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-4">Micro-Hydro Flow Simulator</h3>
+                <p class="text-slate-300 text-sm sm:text-lg">
+                    Atur debit aliran air secara langsung dan amati bagaimana turbin mengonsumsi energi mekanis untuk menghasilkan tegangan listrik secara real-time!
+                </p>
+            </div>
+
+            <!-- Simulator Main Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Left & Middle: Canvas Visualizer & Control Bar -->
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    <!-- Interactive Canvas Screen -->
+                    <div class="glass-panel p-4 rounded-3xl relative overflow-hidden border border-cyan-500/30">
+                        <div class="absolute top-6 left-6 z-10 flex items-center gap-3">
+                            <span class="flex h-3 w-3 relative">
+                              <span id="simulator-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                            </span>
+                            <span class="text-xs font-bold text-white tracking-wider uppercase bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700">
+                                Status: <span id="sim-status-text" class="text-cyan-400">BERJALAN</span>
+                            </span>
+                        </div>
+
+                        <!-- Main Simulation Visual Canvas -->
+                        <canvas id="pltmhCanvas" class="w-full h-[360px] sm:h-[420px] rounded-2xl bg-slate-950 block"></canvas>
+
+                        <!-- Canvas Interactive Overlay Control Buttons -->
+                        <div class="mt-4 flex flex-wrap items-center justify-between gap-4 px-2">
+                            <div class="flex items-center gap-3">
+                                <button id="btn-toggle-sim" onclick="toggleSimulation()" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors flex items-center gap-2">
+                                    <i id="sim-play-icon" class="fa-solid fa-pause"></i> <span id="sim-play-label">Jeda Simulasi</span>
+                                </button>
+                                <button onclick="boostFlow()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold text-xs transition-all shadow-lg shadow-amber-500/20">
+                                    <i class="fa-solid fa-bolt"></i> Boost Debit (+50 L/s)
+                                </button>
+                            </div>
+
+                            <div class="text-xs text-slate-400 font-medium">
+                                <i class="fa-solid fa-info-circle text-cyan-400 mr-1"></i> Geser slider untuk mengatur kecepatan air
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow Control Slider Box -->
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <div class="flex items-center justify-between mb-3">
+                            <label for="debit-slider" class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-gauge-high text-cyan-400"></i> Debit Aliran Air (Q):
+                            </label>
+                            <span class="text-xl font-extrabold text-cyan-400" id="debit-display">60 L/detik</span>
+                        </div>
+                        <input type="range" id="debit-slider" min="0" max="150" value="60" class="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-medium">
+                            <span>0 L/s (Mati)</span>
+                            <span>50 L/s (Normal)</span>
+                            <span>100 L/s (Tinggi)</span>
+                            <span>150 L/s (Maksimal)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Live Digital Dashboard Readings & Realtime Chart -->
+                <div class="flex flex-col gap-6">
+                    <!-- Readout Gauges Grid -->
+                    <div class="glass-panel p-6 rounded-3xl border border-cyan-500/30">
+                        <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-desktop text-cyan-400"></i> Digital Telemetri PLTMH
+                        </h4>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-[11px] text-slate-400 font-medium">Daya Listrik (P)</div>
+                                <div class="text-2xl font-black text-cyan-400" id="meter-power">2.41 kW</div>
+                            </div>
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-[11px] text-slate-400 font-medium">Kecepatan Turbin</div>
+                                <div class="text-2xl font-black text-teal-300" id="meter-rpm">900 RPM</div>
+                            </div>
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-[11px] text-slate-400 font-medium">Tegangan (V)</div>
+                                <div class="text-2xl font-black text-emerald-400" id="meter-voltage">220 V</div>
+                            </div>
+                            <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800">
+                                <div class="text-[11px] text-slate-400 font-medium">Frekuensi (Hz)</div>
+                                <div class="text-2xl font-black text-amber-400" id="meter-freq">50.0 Hz</div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Chart.js Power Curve -->
+                        <div class="bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                            <div class="text-xs font-semibold text-slate-400 mb-2 flex items-center justify-between">
+                                <span>Output Daya Listrik Real-Time</span>
+                                <span class="text-[10px] text-cyan-400 animate-pulse">● Live Data</span>
+                            </div>
+                            <div class="h-32 w-full">
+                                <canvas id="powerChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Alur Kerja PLTMH -->
+                    <div class="glass-panel p-6 rounded-3xl">
+                        <h4 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4">
+                            Tahapan Alur Kerja HidroLab
+                        </h4>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 rounded-xl bg-slate-900/80 border-l-4 border-cyan-400">
+                                <div class="font-bold text-white">1. Pemanfaatan Aliran Air</div>
+                                <div class="text-slate-400 mt-0.5">Air dari sungai diarahkan masuk dengan kecepatan stabil.</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border-l-4 border-teal-400">
+                                <div class="font-bold text-white">2. Konversi Energi Mekanis</div>
+                                <div class="text-slate-400 mt-0.5">Dorongan air memutar sudu turbin menghasilkan putaran poros.</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/80 border-l-4 border-emerald-400">
+                                <div class="font-bold text-white">3. Pembangkitan Listrik</div>
+                                <div class="text-slate-400 mt-0.5">Generator mengubah energi mekanis menjadi tegangan listrik.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- KUIS GAMIFIKASI INTERAKTIF -->
+    <section id="kuis" class="py-24 bg-slate-950/60 relative border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-3">Evaluasi Pembelajaran</h2>
+                <h3 class="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">Kuis Pemahaman HidroLab</h3>
+                <p class="text-slate-300 text-sm sm:text-base">
+                    Uji sejauh mana Anda memahami prinsip kerja PLTMH dan EBT. Dapatkan Sertifikat Digital resmi HidroLab jika berhasil lulus!
+                </p>
+            </div>
+
+            <!-- Quiz Box Panel -->
+            <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
+                
+                <!-- Progress Bar -->
+                <div class="mb-8">
+                    <div class="flex justify-between text-xs font-bold text-slate-300 mb-2">
+                        <span id="quiz-progress-text">Soal 1 dari 5</span>
+                        <span id="quiz-progress-percent" class="text-cyan-400">20% Selesai</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-300 w-1/5"></div>
+                    </div>
+                </div>
+
+                <!-- Quiz Questions Form -->
+                <div id="quiz-question-container">
+                    <!-- Dynamic Question Displayed Here -->
+                </div>
+
+                <!-- Quiz Actions Footer -->
+                <div class="mt-8 flex items-center justify-between pt-6 border-t border-slate-800">
+                    <button id="btn-prev-question" onclick="prevQuestion()" class="px-5 py-2.5 rounded-xl glass-panel text-slate-400 hover:text-white font-bold text-xs transition-colors hidden">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Sebelumnya
+                    </button>
+                    <button id="btn-next-question" onclick="nextQuestion()" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs transition-colors ml-auto shadow-lg shadow-cyan-500/20">
+                        Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+
+                <!-- Quiz Results Container (Hidden initially) -->
+                <div id="quiz-result-card" class="hidden text-center py-6">
+                    <div class="w-20 h-20 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center text-cyan-400 text-4xl mx-auto mb-6 shadow-xl shadow-cyan-500/20">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="text-3xl font-black text-white mb-2" id="result-title">Selamat! Anda Lulus</h4>
+                    <p class="text-slate-300 text-sm mb-6" id="result-desc">Anda telah menguasai konsep dasar EBT dan PLTMH dengan sangat baik.</p>
+                    
+                    <div class="glass-panel p-6 rounded-2xl max-w-sm mx-auto mb-8 border border-cyan-500/40">
+                        <div class="text-xs text-slate-400 uppercase font-semibold">Skor Akhir Anda</div>
+                        <div class="text-5xl font-black text-gradient my-2" id="result-score">100/100</div>
+                        <div class="text-xs text-emerald-400 font-bold" id="result-badge">Lencana: Pahlawan Energi Hydro</div>
+                    </div>
+
+                    <!-- Certificate Generation Name Input -->
+                    <div class="max-w-sm mx-auto mb-6">
+                        <label for="cert-name" class="block text-xs font-semibold text-slate-300 mb-2 text-left">Nama Lengkap untuk Sertifikat:</label>
+                        <input type="text" id="cert-name" placeholder="Masukkan nama Anda..." class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-cyan-400">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <button onclick="generateCertificate()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:scale-105 transition-all">
+                            <i class="fa-solid fa-certificate mr-1.5"></i> Cetak Sertifikat Kelulusan
+                        </button>
+                        <button onclick="restartQuiz()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl glass-panel text-white font-bold text-xs hover:bg-slate-800 transition-all">
+                            <i class="fa-solid fa-rotate-right mr-1.5"></i> Ulangi Kuis
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Pindai QR Code Simulation -->
+    <div id="qrModal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-3xl max-w-md w-full relative text-center border border-cyan-500/40">
+            <button onclick="closeQRModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <h4 class="text-xl font-bold text-white mb-2">Pindaian Kode QR HidroLab</h4>
+            <p class="text-xs text-slate-300 mb-6">Arahkan kamera smartphone Anda ke kode di bawah untuk membuka modul digital interaktif saat mengunjungi unit fisik HidroLab.</p>
+            
+            <!-- Simulated QR Code Image Placeholder -->
+            <div class="bg-white p-4 rounded-2xl inline-block mb-6 shadow-2xl">
+                <svg class="w-44 h-44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" fill="white"/>
+                    <path d="M10 10H40V40H10V10ZM15 15V35H35V15H15Z" fill="#0f172a"/>
+                    <path d="M20 20H30V30H20V20Z" fill="#0284c7"/>
+                    <path d="M60 10H90V40H60V10ZM65 15V35H85V15H65Z" fill="#0f172a"/>
+                    <path d="M70 20H80V30H70V20Z" fill="#0284c7"/>
+                    <path d="M10 60H40V90H10V60ZM15 65V85H35V65H15Z" fill="#0f172a"/>
+                    <path d="M20 70H30V80H20V70Z" fill="#0284c7"/>
+                    <rect x="50" y="50" width="10" height="10" fill="#0f172a"/>
+                    <rect x="70" y="50" width="20" height="10" fill="#0284c7"/>
+                    <rect x="50" y="70" width="10" height="20" fill="#0284c7"/>
+                    <rect x="70" y="70" width="10" height="10" fill="#0f172a"/>
+                    <rect x="80" y="80" width="10" height="10" fill="#0f172a"/>
+                </svg>
+            </div>
+
+            <button onclick="closeQRModal()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs">
+                Tutup Simulasi
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Certificate Generation -->
+    <canvas id="certCanvas" width="1000" height="700" class="hidden"></canvas>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500 flex items-center justify-center text-slate-950 font-black text-sm">
+                    <i class="fa-solid fa-water"></i>
+                </div>
+                <span class="text-lg font-bold text-white">Hidro<span class="text-cyan-400">Lab</span></span>
+            </div>
+            <p class="text-xs text-slate-400 text-center md:text-left">
+                &copy; 2026 HidroLab Platform. Mengedukasi Energi Terbarukan & Terus Berkelanjutan.
+            </p>
+            <div class="flex items-center gap-4 text-slate-400 text-sm">
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC & ENGINE -->
+    <script>
+        // Web Audio API Synthesizer (No external audio file dependencies)
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.08);
+                } else if (type === 'success') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                }
+            } catch (e) {
+                // Audio context suppressed if no user gesture
+            }
+        }
+
+        // Mobile Navigation Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Animated Stats Tickers on Page Load
+        function animateStats() {
+            let eff = 0, power = 0, co2 = 0;
+            const effInterval = setInterval(() => {
+                eff += 2;
+                if (eff >= 88) { eff = 88; clearInterval(effInterval); }
+                document.getElementById('stat-efficiency').innerText = eff + '%';
+            }, 30);
+
+            const powerInterval = setInterval(() => {
+                power += 0.5;
+                if (power >= 10) { power = 10; clearInterval(powerInterval); }
+                document.getElementById('stat-power').innerText = power.toFixed(0) + ' kW';
+            }, 50);
+
+            const co2Interval = setInterval(() => {
+                co2 += 0.5;
+                if (co2 >= 18) { co2 = 18; clearInterval(co2Interval); }
+                document.getElementById('stat-co2').innerText = co2.toFixed(0) + ' Ton';
+            }, 40);
+        }
+
+        // Keunggulan Modals Data & Functions
+        const advantageDetails = {
+            ebt: {
+                title: "Edukasi Energi Terbarukan",
+                icon: "fa-leaf text-cyan-400",
+                desc: "Energi Baru Terbarukan (EBT) adalah kunci masa depan bumi yang bersih. Melalui HidroLab, pengguna diajak memahami prinsip dasar sains bagaimana air yang mengalir secara konsisten dapat menggantikan bahan bakar fosil penyeimbang ekosistem."
+            },
+            proses: {
+                title: "Visualisasi Proses Langsung",
+                icon: "fa-bolt text-teal-300",
+                desc: "Tidak hanya sekadar teori, HidroLab memberikan pengalaman visual yang memadukan perubahan energi potensial air menjadi energi mekanis pada poros turbin, hingga induksi elektromagnetik generator secara langsung."
+            },
+            literasi: {
+                title: "Literasi Digital & Data Telemetri",
+                icon: "fa-chart-line text-emerald-400",
+                desc: "Pengunjung dapat mengamati grafik daya listrik, kestabilan frekuensi 50Hz, serta fluktuasi tegangan secara digital. Hal ini memupuk literasi sains data modern bagi generasi penerus."
+            },
+            wisata: {
+                title: "Dukungan Wisata Edukatif",
+                icon: "fa-compass text-amber-400",
+                desc: "HidroLab mengintegrasikan fasilitas teknologi tinggi dengan konsep kawasan wisata alam lokal. Menciptakan nilai tambah ekonomi bagi masyarakat sekitar sekaligus menjadi pusat studi rekreasi."
+            },
+            lokal: {
+                title: "Potensi Air Berkelanjutan",
+                icon: "fa-droplet text-blue-400",
+                desc: "PLTMH menggunakan skema run-of-river (tanpa mengeringkan atau membendung ekosistem secara destruktif). Air hanya dibelokkan sementara untuk memutar turbin dan dikembalikan utuh ke alur sungai."
+            }
+        };
+
+        function openAdvantageModal(key) {
+            playSound('click');
+            const data = advantageDetails[key];
+            if (!data) return;
+            const container = document.getElementById('modalContent');
+            container.innerHTML = `
+                <div class="text-center mb-4">
+                    <i class="fa-solid ${data.icon} text-4xl mb-3"></i>
+                    <h4 class="text-2xl font-bold text-white">${data.title}</h4>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">${data.desc}</p>
+                <button onclick="closeAdvantageModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors">
+                    Saya Mengerti
+                </button>
+            `;
+            document.getElementById('advantageModal').classList.remove('hidden');
+            document.getElementById('advantageModal').classList.add('flex');
+        }
+
+        function closeAdvantageModal() {
+            document.getElementById('advantageModal').classList.add('hidden');
+            document.getElementById('advantageModal').classList.remove('flex');
+        }
+
+        function openQRModal() {
+            playSound('click');
+            document.getElementById('qrModal').classList.remove('hidden');
+            document.getElementById('qrModal').classList.add('flex');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+            document.getElementById('qrModal').classList.remove('flex');
+        }
+
+        // EBT Module Tabs Engine
+        const ebtData = {
+            hidro: {
+                title: "Energi Hidro (Pembangkit Mikrohidro)",
+                desc: "Pembangkit Listrik Tenaga Mikrohidro (PLTMH) mengandalkan potensi perbedaan ketinggian dan debit air sungai. Sangat cocok diterapkan di wilayah pedesaan Indonesia yang kaya akan aliran sungai alami.",
+                highlights: ["Ramah Lingkungan", "Biaya Operasional Rendah", "Berjalan 24 Jam Non-stop"]
+            },
+            surya: {
+                title: "Energi Surya (Panel Fotovoltaik)",
+                desc: "Memanfaatkan foton dari sinar matahari yang ditangkap oleh sel surya berbahan silikon untuk langsung menghasilkan arus listrik searah (DC). Sangat efektif di iklim tropis.",
+                highlights: ["Bebas Kebisingan", "Pemasangan Fleksibel di Atap", "Sumber Matahari Melimpah"]
+            },
+            angin: {
+                title: "Energi Angin (Kincir / Turbin Angin)",
+                desc: "Hembusan angin memutar sudu kincir berukuran besar yang tersambung ke generator. Sering ditempatkan di area pesisir pantai atau perbukitan berangin kencang.",
+                highlights: ["Lahan Tapak Minimal", "Zero Emisi Karbon", "Teknologi Teruji"]
+            },
+            biomassa: {
+                title: "Energi Biomassa (Limbah Organik)",
+                desc: "Memanfaatkan limbah pertanian, kayu, atau kotoran ternak yang diolah melalui proses fermentasi biogas atau pembakaran langsung untuk energi panas dan listrik.",
+                highlights: ["Menanggulangi Limbah", "Mendukung Ekonomi Sirkular", "Sumber Terbarukan"]
+            }
+        };
+
+        function switchEbtTab(key) {
+            playSound('click');
+            document.querySelectorAll('.ebt-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-slate-950', 'shadow-lg');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            const activeBtn = document.getElementById(`tab-btn-${key}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-cyan-500', 'text-slate-950', 'shadow-lg');
+            }
+
+            const data = ebtData[key];
+            const contentDiv = document.getElementById('ebt-tab-content');
+            contentDiv.innerHTML = `
+                <h4 class="text-2xl font-extrabold text-white mb-3">${data.title}</h4>
+                <p class="text-slate-300 text-sm leading-relaxed mb-6">${data.desc}</p>
+                <div class="flex flex-wrap gap-3">
+                    ${data.highlights.map(h => `<span class="px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold"><i class="fa-solid fa-check mr-1.5 text-emerald-400"></i>${h}</span>`).join('')}
+                </div>
+            `;
+        }
+
+        // Carbon Savings Calculator Event Listener
+        document.getElementById('kwh-slider').addEventListener('input', function(e) {
+            const kwh = parseFloat(e.target.value);
+            document.getElementById('kwh-value').innerText = `${kwh} kWh/bulan`;
+            
+            // Formula calculation: 1 kWh approx 0.85 kg CO2 emission in coal grid
+            const co2KgPerYear = Math.round(kwh * 12 * 0.85);
+            const trees = Math.round(co2KgPerYear / 22); // 1 tree absorbs ~22kg CO2/year
+
+            document.getElementById('co2-result').innerText = `${co2KgPerYear.toLocaleString()} kg`;
+            document.getElementById('trees-result').innerText = `${trees} Pohon/Tahun`;
+        });
+
+        // Canvas Particle Background for Hero
+        const heroCanvas = document.getElementById('heroCanvas');
+        const heroCtx = heroCanvas.getContext('2d');
+        let heroParticles = [];
+
+        function resizeHeroCanvas() {
+            heroCanvas.width = heroCanvas.offsetWidth;
+            heroCanvas.height = heroCanvas.offsetHeight;
+        }
+
+        class HeroParticle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * heroCanvas.width;
+                this.y = Math.random() * heroCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = -(Math.random() * 1 + 0.3);
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                heroCtx.fillStyle = `rgba(0, 242, 254, ${this.alpha})`;
+                heroCtx.beginPath();
+                heroCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                heroCtx.fill();
+            }
+        }
+
+        function initHeroCanvas() {
+            resizeHeroCanvas();
+            heroParticles = [];
+            for (let i = 0; i < 45; i++) {
+                heroParticles.push(new HeroParticle());
+            }
+        }
+
+        function animateHeroCanvas() {
+            heroCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+            heroParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateHeroCanvas);
+        }
+
+        // PLTMH Simulator Canvas & Real-time Math Engine
+        const pltmhCanvas = document.getElementById('pltmhCanvas');
+        const pltmhCtx = pltmhCanvas.getContext('2d');
+
+        let isSimRunning = true;
+        let debitValue = 60; // Liter per second
+        let turbineAngle = 0;
+        let waterParticles = [];
+
+        function resizePltmhCanvas() {
+            pltmhCanvas.width = pltmhCanvas.offsetWidth;
+            pltmhCanvas.height = pltmhCanvas.offsetHeight;
+        }
+
+        class WaterParticle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = 20;
+                this.y = 80 + Math.random() * 30;
+                this.speed = (debitValue / 20) + Math.random() * 2;
+                this.size = Math.random() * 4 + 2;
+            }
+            update() {
+                if (!isSimRunning) return;
+                this.speed = (debitValue / 15) + Math.random() * 1.5;
+                this.x += this.speed;
+
+                // Path following water flow channel to turbine
+                if (this.x > pltmhCanvas.width * 0.45 && this.y < pltmhCanvas.height * 0.65) {
+                    this.y += this.speed * 0.8;
+                }
+
+                if (this.x > pltmhCanvas.width) {
+                    this.reset();
+                }
+            }
+            draw() {
+                pltmhCtx.fillStyle = '#00f2fe';
+                pltmhCtx.shadowColor = '#00f2fe';
+                pltmhCtx.shadowBlur = 8;
+                pltmhCtx.beginPath();
+                pltmhCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                pltmhCtx.fill();
+                pltmhCtx.shadowBlur = 0;
+            }
+        }
+
+        function initPltmhSim() {
+            resizePltmhCanvas();
+            waterParticles = [];
+            for (let i = 0; i < 60; i++) {
+                let p = new WaterParticle();
+                p.x = Math.random() * pltmhCanvas.width;
+                waterParticles.push(p);
+            }
+        }
+
+        function drawPltmhScene() {
+            const w = pltmhCanvas.width;
+            const h = pltmhCanvas.height;
+
+            pltmhCtx.clearRect(0, 0, w, h);
+
+            // 1. Draw Water Channel Pipeline (Glass/Hydro Tunnel)
+            pltmhCtx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+            pltmhCtx.lineWidth = 40;
+            pltmhCtx.lineCap = 'round';
+            pltmhCtx.beginPath();
+            pltmhCtx.moveTo(0, 95);
+            pltmhCtx.lineTo(w * 0.45, 95);
+            pltmhCtx.lineTo(w * 0.55, h * 0.7);
+            pltmhCtx.lineTo(w, h * 0.7);
+            pltmhCtx.stroke();
+
+            // Inner channel line
+            pltmhCtx.strokeStyle = 'rgba(15, 23, 42, 0.8)';
+            pltmhCtx.lineWidth = 32;
+            pltmhCtx.stroke();
+
+            // 2. Draw Water Stream Particles
+            waterParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // 3. Draw Water Wheel / Turbine (At Center Drop Point)
+            const turbineX = w * 0.52;
+            const turbineY = h * 0.62;
+            const radius = 45;
+
+            pltmhCtx.save();
+            pltmhCtx.translate(turbineX, turbineY);
+
+            if (isSimRunning) {
+                turbineAngle += (debitValue / 100) * 0.12;
+            }
+            pltmhCtx.rotate(turbineAngle);
+
+            // Wheel Outer Rim
+            pltmhCtx.strokeStyle = '#38bdf8';
+            pltmhCtx.lineWidth = 4;
+            pltmhCtx.beginPath();
+            pltmhCtx.arc(0, 0, radius, 0, Math.PI * 2);
+            pltmhCtx.stroke();
+
+            // Turbine Blades (6 Blades)
+            for (let i = 0; i < 6; i++) {
+                pltmhCtx.rotate(Math.PI / 3);
+                pltmhCtx.fillStyle = '#4facfe';
+                pltmhCtx.fillRect(-4, -radius - 10, 8, 20);
+            }
+
+            // Center Hub
+            pltmhCtx.fillStyle = '#0284c7';
+            pltmhCtx.beginPath();
+            pltmhCtx.arc(0, 0, 14, 0, Math.PI * 2);
+            pltmhCtx.fill();
+
+            pltmhCtx.restore();
+
+            // 4. Draw Shaft Transmission & Generator Box
+            const genX = w * 0.8;
+            const genY = h * 0.62;
+
+            // Shaft Line
+            pltmhCtx.strokeStyle = '#94a3b8';
+            pltmhCtx.lineWidth = 6;
+            pltmhCtx.beginPath();
+            pltmhCtx.moveTo(turbineX, turbineY);
+            pltmhCtx.lineTo(genX, genY);
+            pltmhCtx.stroke();
+
+            // Generator Box
+            pltmhCtx.fillStyle = '#0f172a';
+            pltmhCtx.strokeStyle = isSimRunning && debitValue > 0 ? '#10b981' : '#64748b';
+            pltmhCtx.lineWidth = 3;
+            pltmhCtx.shadowColor = isSimRunning && debitValue > 0 ? '#10b981' : 'transparent';
+            pltmhCtx.shadowBlur = 15;
+            pltmhCtx.fillRect(genX - 30, genY - 30, 60, 60);
+            pltmhCtx.strokeRect(genX - 30, genY - 30, 60, 60);
+            pltmhCtx.shadowBlur = 0;
+
+            // Generator Label & LED
+            pltmhCtx.fillStyle = isSimRunning && debitValue > 0 ? '#10b981' : '#ef4444';
+            pltmhCtx.beginPath();
+            pltmhCtx.arc(genX, genY - 15, 5, 0, Math.PI * 2);
+            pltmhCtx.fill();
+
+            pltmhCtx.fillStyle = '#ffffff';
+            pltmhCtx.font = 'bold 10px Plus Jakarta Sans';
+            pltmhCtx.textAlign = 'center';
+            pltmhCtx.fillText('GEN-01', genX, genY + 12);
+
+            requestAnimationFrame(drawPltmhScene);
+        }
+
+        // Toggle Simulation Play/Pause
+        function toggleSimulation() {
+            playSound('click');
+            isSimRunning = !isSimRunning;
+            const label = document.getElementById('sim-play-label');
+            const icon = document.getElementById('sim-play-icon');
+            const statusText = document.getElementById('sim-status-text');
+            const ping = document.getElementById('simulator-ping');
+
+            if (isSimRunning) {
+                label.innerText = 'Jeda Simulasi';
+                icon.className = 'fa-solid fa-pause';
+                statusText.innerText = 'BERJALAN';
+                statusText.className = 'text-cyan-400';
+                ping.classList.remove('hidden');
+            } else {
+                label.innerText = 'Mulai Simulasi';
+                icon.className = 'fa-solid fa-play';
+                statusText.innerText = 'DIHENTIKAN';
+                statusText.className = 'text-amber-400';
+                ping.classList.add('hidden');
+            }
+        }
+
+        function boostFlow() {
+            playSound('click');
+            const slider = document.getElementById('debit-slider');
+            let current = parseInt(slider.value);
+            slider.value = Math.min(150, current + 50);
+            slider.dispatchEvent(new Event('input'));
+        }
+
+        // Chart.js Live Power Line Initialization
+        let powerChart;
+        const chartDataPoints = Array(12).fill(0);
+        const chartLabels = Array(12).fill('');
+
+        function initChart() {
+            const ctx = document.getElementById('powerChart').getContext('2d');
+            powerChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        data: chartDataPoints,
+                        borderColor: '#00f2fe',
+                        borderWidth: 2,
+                        backgroundColor: 'rgba(0, 242, 254, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            display: true,
+                            min: 0,
+                            max: 7,
+                            ticks: { color: '#64748b', font: { size: 9 } },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Live Telemetry Math Calculations & Chart Update Loop
+        function updateTelemetry() {
+            if (isSimRunning) {
+                // Microhydro Power Formula: P (kW) = debit (L/s) * head (m) * gravity (9.81) * eff (0.8) / 1000
+                // Assuming fixed head H = 5m
+                const power = (debitValue * 5 * 9.81 * 0.82 / 1000).toFixed(2);
+                const rpm = Math.round(debitValue * 15);
+                const voltage = debitValue > 0 ? 220 : 0;
+                const freq = debitValue > 0 ? (49.8 + Math.random() * 0.4).toFixed(1) : 0;
+
+                document.getElementById('meter-power').innerText = `${power} kW`;
+                document.getElementById('meter-rpm').innerText = `${rpm} RPM`;
+                document.getElementById('meter-voltage').innerText = `${voltage} V`;
+                document.getElementById('meter-freq').innerText = `${freq} Hz`;
+
+                // Update Chart
+                if (powerChart) {
+                    chartDataPoints.shift();
+                    chartDataPoints.push(parseFloat(power));
+                    powerChart.update();
+                }
+            }
+        }
+
+        document.getElementById('debit-slider').addEventListener('input', function(e) {
+            debitValue = parseFloat(e.target.value);
+            document.getElementById('debit-display').innerText = `${debitValue} L/detik`;
+            updateTelemetry();
+        });
+
+        // Gamified Quiz Engine
+        const quizQuestions = [
+            {
+                q: "Apa prinsip mendasar dari Energi Terbarukan (EBT)?",
+                options: [
+                    "Berasal dari fosil yang terbentuk jutaan tahun",
+                    "Dapat diperbarui secara alami dan ramah lingkungan",
+                    "Hanya bisa digunakan dalam jangka pendek"
+                ],
+                correct: 1
+            },
+            {
+                q: "Pada sistem PLTMH, komponen apa yang berfungsi mengonversi dorongan air menjadi putaran mekanis?",
+                options: [
+                    "Generator Listrik",
+                    "Sudu Turbin / Kincir Air",
+                    "Inverter Arus"
+                ],
+                correct: 1
+            },
+            {
+                q: "Faktor utama apa yang memengaruhi besarnya daya listrik keluaran PLTMH?",
+                options: [
+                    "Debit air dan ketinggian jatuh (Head)",
+                    "Warna air dan kedalaman sungai",
+                    "Suhu udara sekitar turbin"
+                ],
+                correct: 0
+            },
+            {
+                q: "Apa keunggulan skema 'Run-of-River' pada PLTMH?",
+                options: [
+                    "Membutuhkan bendungan raksasa yang menenggelamkan desa",
+                    "Memanfaatkan aliran alami sungai tanpa merusak ekosistem",
+                    "Menghasilkan limbah emisi gas rumah kaca"
+                ],
+                correct: 1
+            },
+            {
+                q: "Bagaimana sistem HidroLab mempermudah pengunjung mengakses materi edukasi digital di lapangan?",
+                options: [
+                    "Mengirimkan buku fisik lewat pos",
+                    "Menggunakan pindaian Kode QR interaktif di smartphone",
+                    "Mewajibkan login dengan kartu identitas"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIdx = 0;
+        let userAnswers = Array(quizQuestions.length).fill(null);
+
+        function renderQuestion() {
+            const q = quizQuestions[currentQuestionIdx];
+            const container = document.getElementById('quiz-question-container');
+
+            container.innerHTML = `
+                <h4 class="text-xl font-bold text-white mb-6">${currentQuestionIdx + 1}. ${q.q}</h4>
+                <div class="space-y-3">
+                    ${q.options.map((opt, idx) => `
+                        <label class="flex items-center p-4 rounded-2xl glass-panel cursor-pointer hover:border-cyan-400 transition-all ${userAnswers[currentQuestionIdx] === idx ? 'border-cyan-400 bg-cyan-950/40' : ''}">
+                            <input type="radio" name="quiz-opt" value="${idx}" ${userAnswers[currentQuestionIdx] === idx ? 'checked' : ''} onchange="selectOption(${idx})" class="w-4 h-4 text-cyan-400 focus:ring-0 accent-cyan-400">
+                            <span class="ml-3 text-sm text-slate-200 font-medium">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+
+            // Progress text
+            document.getElementById('quiz-progress-text').innerText = `Soal ${currentQuestionIdx + 1} dari ${quizQuestions.length}`;
+            const percent = Math.round(((currentQuestionIdx + 1) / quizQuestions.length) * 100);
+            document.getElementById('quiz-progress-percent').innerText = `${percent}% Selesai`;
+            document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+            // Prev button visibility
+            const prevBtn = document.getElementById('btn-prev-question');
+            if (currentQuestionIdx > 0) {
+                prevBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+            }
+
+            // Next / Finish button label
+            const nextBtn = document.getElementById('btn-next-question');
+            if (currentQuestionIdx === quizQuestions.length - 1) {
+                nextBtn.innerHTML = 'Kirim Jawaban <i class="fa-solid fa-paper-plane ml-1"></i>';
+            } else {
+                nextBtn.innerHTML = 'Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i>';
+            }
+        }
+
+        function selectOption(idx) {
+            playSound('click');
+            userAnswers[currentQuestionIdx] = idx;
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIdx] === null) {
+                alert('Silakan pilih salah satu jawaban terlebih dahulu!');
+                return;
+            }
+
+            if (currentQuestionIdx < quizQuestions.length - 1) {
+                currentQuestionIdx++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIdx > 0) {
+                currentQuestionIdx--;
+                renderQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            playSound('success');
+            let score = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizQuestions[idx].correct) score += 20;
+            });
+
+            document.getElementById('quiz-question-container').classList.add('hidden');
+            document.querySelector('.mt-8.flex.items-center.justify-between').classList.add('hidden');
+            document.getElementById('quiz-result-card').classList.remove('hidden');
+
+            document.getElementById('result-score').innerText = `${score}/100`;
+
+            if (score >= 80) {
+                document.getElementById('result-title').innerText = 'Selamat! Anda Lulus 🎉';
+                document.getElementById('result-desc').innerText = 'Pemahaman Anda mengenai prinsip kerja EBT dan PLTMH sangat luar biasa.';
+                document.getElementById('result-badge').innerText = 'Lencana: Pahlawan Energi Hydro';
+            } else {
+                document.getElementById('result-title').innerText = 'Hasil Kuis Anda';
+                document.getElementById('result-desc').innerText = 'Anda dapat mengulas kembali materi di atas dan mengulangi kuis untuk hasil maksimal.';
+                document.getElementById('result-badge').innerText = 'Lencana: Pembelajar Hidro';
+            }
+        }
+
+        function restartQuiz() {
+            playSound('click');
+            currentQuestionIdx = 0;
+            userAnswers = Array(quizQuestions.length).fill(null);
+            document.getElementById('quiz-question-container').classList.remove('hidden');
+            document.querySelector('.mt-8.flex.items-center.justify-between').classList.remove('hidden');
+            document.getElementById('quiz-result-card').classList.add('hidden');
+            renderQuestion();
+        }
+
+        // HTML5 Canvas Certificate Generator
+        function generateCertificate() {
+            playSound('success');
+            const name = document.getElementById('cert-name').value.trim() || 'Peserta Edukasi HidroLab';
+            const certCanvas = document.getElementById('certCanvas');
+            const ctx = certCanvas.getContext('2d');
+
+            // Background Gradient
+            const grad = ctx.createLinearGradient(0, 0, 1000, 700);
+            grad.addColorStop(0, '#060d1d');
+            grad.addColorStop(0.5, '#0d1b2a');
+            grad.addColorStop(1, '#0284c7');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1000, 700);
+
+            // Gold / Cyan Border Frame
+            ctx.strokeStyle = '#00f2fe';
+            ctx.lineWidth = 10;
+            ctx.strokeRect(30, 30, 940, 640);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(45, 45, 910, 610);
+
+            // Watermark Logo Text
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.font = 'bold 120px Plus Jakarta Sans';
+            ctx.textAlign = 'center';
+            ctx.fillText('HIDROLAB', 500, 380);
+
+            // Title
+            ctx.fillStyle = '#00f2fe';
+            ctx.font = 'bold 36px Plus Jakarta Sans';
+            ctx.fillText('SERTIFIKAT KELULUSAN LITERASI ENERGI', 500, 140);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '18px Plus Jakarta Sans';
+            ctx.fillText('Diberikan secara resmi oleh HidroLab Platform kepada:', 500, 200);
+
+            // Name
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'extrabold 48px Plus Jakarta Sans';
+            ctx.fillText(name, 500, 290);
+
+            // Underline name
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(300, 310);
+            ctx.lineTo(700, 310);
+            ctx.stroke();
+
+            // Statement
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '16px Plus Jakarta Sans';
+            ctx.fillText('Atas keberhasilan menguasai Modul Pembelajaran Interaktif & Simulasi', 500, 370);
+            ctx.fillText('Pembangkit Listrik Tenaga Mikrohidro (PLTMH) dengan Hasil Sangat Memuaskan.', 500, 400);
+
+            // Seal Badge Stamp
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(500, 500, 45, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px Plus Jakarta Sans';
+            ctx.fillText('VERIFIED', 500, 498);
+            ctx.fillText('EBT 2026', 500, 512);
+
+            // Date & Sign
+            ctx.fillStyle = '#64748b';
+            ctx.font = '14px Plus Jakarta Sans';
+            ctx.fillText('Tanggal Terbit: September 2026', 220, 580);
+            ctx.fillText('Direktur Edukasi HidroLab', 780, 580);
+
+            // Trigger Image Download
+            const link = document.createElement('a');
+            link.download = `Sertifikat_HidroLab_${name.replace(/\s+/g, '_')}.png`;
+            link.href = certCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Initialize Window OnLoad
+        window.onload = function() {
+            initHeroCanvas();
+            animateHeroCanvas();
+            animateStats();
+            switchEbtTab('hidro');
+
+            initPltmhSim();
+            drawPltmhScene();
+
+            initChart();
+            renderQuestion();
+
+            // Telemetry update interval every 1 second
+            setInterval(updateTelemetry, 1000);
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                resizeHeroCanvas();
+                resizePltmhCanvas();
+            });
+        };
+    </script>
+</body>
+</html>
